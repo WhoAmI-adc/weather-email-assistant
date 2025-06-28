@@ -3,7 +3,7 @@ name: Weather Email Service
 on:
   schedule:
     # 每天北京时间09:00运行 (UTC时间01:00)
-    - cron: '10 7 * * *'
+    - cron: '30 7 * * *'
   
   # 允许手动触发
   workflow_dispatch:
