@@ -1,0 +1,60 @@
+name: Weather Email Service
+
+on:
+  schedule:
+    # 每天北京时间09:00运行 (UTC时间01:00)
+    - cron: '0 1 * * *'
+  
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  send-weather-email:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install requests schedule
+    
+    - name: Create config file
+      run: |
+        cat > email_config.json << EOF
+        {
+          "weather_api_key": "${{ secrets.WEATHER_API_KEY }}",
+          "weather_api_host": "p26hewkwag.re.qweatherapi.com",
+          "city_code": "101030100",
+          
+          "smtp_server": "smtp.qq.com",
+          "smtp_port": 587,
+          "email_user": "${{ secrets.EMAIL_USER }}",
+          "email_password": "${{ secrets.EMAIL_PASSWORD }}",
+          "sender_name": "小麻雀天气助手",
+          
+          "recipients": ${{ secrets.RECIPIENTS }},
+          
+          "send_times": [
+            "09:00"
+          ]
+        }
+        EOF
+    
+    - name: Send weather email
+      run: |
+        python weather_email_clean.py test
+    
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: weather-logs
+        path: "*.log"
+        retention-days: 7
