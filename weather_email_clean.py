@@ -203,8 +203,12 @@ class WeatherEmail:
             "🎯 愿你每一天都很美好",
             "✨ 小麻雀生活愉快"
         ]
-        advice_list.append(random.choice(tips))
-        
+        now = datetime.now()
+        if now.day == 1:
+            advice_list.append(f"{now.month}月快乐！黄雨珏同学！")
+        else:
+            advice_list.append(random.choice(tips))
+            
         return advice_list
     
     def check_rain_alert(self, weather_data):
