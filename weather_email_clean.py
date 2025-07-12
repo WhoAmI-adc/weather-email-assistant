@@ -148,9 +148,16 @@ class WeatherEmail:
         elif temp <= 30:
             advice_list.append("👕 建议穿短袖T恤、衬衫或薄款上衣")
             advice_list.append("🩳 可以穿短裤、薄款长裤或裙子")
-        else:
+        elif temp <= 35:
             advice_list.append("👕 建议穿清爽的短袖、薄款衣物")
             advice_list.append("🌡️ 天气较热，选择透气性好的衣物")
+        else:
+            # 高温天气特殊建议
+            advice_list.append("🌡️ 高温天气，穿轻薄、浅色、透气的衣物")
+            advice_list.append("🧢 外出务必戴帽子，做好防晒措施")
+            advice_list.append("💧 多喝水，避免长时间暴露在阳光下")
+            if temp >= 38:
+                advice_list.append("🔥 酷热天气，尽量避免户外活动，注意防暑降温")
         
         # 特殊天气建议
         if '雨' in weather_text or '雷' in weather_text:
@@ -182,6 +189,12 @@ class WeatherEmail:
                 advice_list.append("🌡️ 昼夜温差大，建议洋葱式穿搭，方便增减")
             elif abs(temp - tomorrow_min) >= 10 or abs(temp - tomorrow_max) >= 10:
                 advice_list.append("📈 气温变化较大，建议准备备用衣物")
+            
+            # 预报高温提醒
+            if tomorrow_max >= 35:
+                advice_list.append("🌡️ 明天气温较高，提前准备防暑用品")
+                if tomorrow_max >= 38:
+                    advice_list.append("🔥 明天酷热，安排室内活动，避免长时间户外暴晒")
         
         # AQI空气质量建议
         if weather_data.get('air_quality'):
@@ -235,6 +248,35 @@ class WeatherEmail:
         
         return None
     
+    def check_temperature_alert(self, weather_data):
+        """检查高温预警"""
+        if not weather_data:
+            return None
+        
+        # 检查当前温度
+        current = weather_data['current']
+        current_temp = int(current.get('temp', 0))
+        
+        # 收集需要检查的温度
+        temperatures_to_check = [current_temp]
+        
+        # 检查今天和明天的最高温度
+        if weather_data['forecast']:
+            for i, day in enumerate(weather_data['forecast'][:2]):  # 检查今天和明天
+                max_temp = int(day.get('tempMax', 0))
+                temperatures_to_check.append(max_temp)
+        
+        # 找出最高温度
+        max_temp = max(temperatures_to_check)
+        
+        # 根据温度返回相应预警
+        if max_temp >= 38:
+            return "🔥 酷热预警：气温达到38°C以上，注意防暑降温，避免长时间户外活动！"
+        elif max_temp >= 35:
+            return "🌡️ 高温预警：气温达到35°C以上，请注意防暑，多补充水分！"
+        
+        return None
+    
     def format_weather_html(self, weather_data):
         """格式化天气信息为HTML邮件内容"""
         if not weather_data:
@@ -244,6 +286,9 @@ class WeatherEmail:
         
         # 检查雨天信息
         rain_alert = self.check_rain_alert(weather_data)
+        
+        # 检查高温预警
+        temperature_alert = self.check_temperature_alert(weather_data)
         
         # 获取AQI信息
         aqi_info = ""
@@ -292,6 +337,16 @@ class WeatherEmail:
                     text-align: center;
                     font-size: 1.1em;
                 }}
+                .temperature-alert {{
+                    background: linear-gradient(135deg, #fd7f00, #e84118);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin: 15px 0;
+                    border-left: 4px solid #cc3300;
+                    text-align: center;
+                    font-size: 1.1em;
+                }}
                 .temperature {{ font-size: 2em; font-weight: bold; }}
                 .date {{ color: #6c757d; font-size: 0.9em; }}
                 .clothing-advice {{
@@ -327,6 +382,14 @@ class WeatherEmail:
             html += f'''
             <div class="rain-alert">
                 {rain_alert}
+            </div>
+            '''
+        
+        # 添加高温预警
+        if temperature_alert:
+            html += f'''
+            <div class="temperature-alert">
+                {temperature_alert}
             </div>
             '''
         
