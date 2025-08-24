@@ -2,8 +2,8 @@ name: Weather Email Service
 
 on:
   schedule:
-    # 每天北京时间08:00运行 (UTC时间00:00)
-    - cron: '0 0 * * *'
+    # 每天北京时间06:00运行 (UTC时间22:00)
+    - cron: '0 22 * * *'
   
   # 允许手动触发
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        pip install requests schedule
+        pip install requests schedule pytz
     
     - name: Create config file
       run: |
@@ -42,8 +42,10 @@ jobs:
           "recipients": ${{ secrets.RECIPIENTS }},
           
           "send_times": [
-            "09:00"
-          ]
+            "06:00"
+          ],
+          
+          "timezone": "Asia/Shanghai"
         }
         EOF
     
