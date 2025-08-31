@@ -31,7 +31,7 @@ jobs:
         {
           "weather_api_key": "${{ secrets.WEATHER_API_KEY }}",
           "weather_api_host": "p26hewkwag.re.qweatherapi.com",
-          "city_code": "101020100",
+          "city_code": "101030100",
           
           "smtp_server": "smtp.qq.com",
           "smtp_port": 587,
