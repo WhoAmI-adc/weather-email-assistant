@@ -8,7 +8,7 @@ import schedule
 import time
 import json
 import smtplib
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
@@ -23,6 +23,12 @@ class WeatherEmail:
     def __init__(self, config_file='email_config.json'):
         """初始化天气邮件服务"""
         self.config = self.load_config(config_file)
+    
+    def get_beijing_time(self):
+        """获取北京时间（UTC+8）"""
+        # 使用 timezone 创建北京时区（UTC+8）
+        beijing_tz = timezone(timedelta(hours=8))
+        return datetime.now(beijing_tz)
         
     def load_config(self, config_file):
         """加载配置文件"""
@@ -203,9 +209,9 @@ class WeatherEmail:
             "🎯 愿你每一天都很美好",
             "✨ 小麻雀生活愉快"
         ]
-        now = datetime.now()
-        if now.day == 1:
-            advice_list.append(f"{now.month}月快乐！黄雨珏同学！")
+        now_beijing = self.get_beijing_time()
+        if now_beijing.day == 1:
+            advice_list.append(f"{now_beijing.month}月快乐！黄雨珏同学！")
         else:
             advice_list.append(random.choice(tips))
             
@@ -305,7 +311,7 @@ class WeatherEmail:
         </head>
         <body>
             <h1>小麻雀天气助手</h1>
-            <div class="date">{datetime.now().strftime('%Y年%m月%d日 %A')}</div>
+            <div class="date">{self.get_beijing_time().strftime('%Y年%m月%d日 %A')}</div>
             
             <div class="weather-card">
                 <div class="current-weather">
