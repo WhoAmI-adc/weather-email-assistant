@@ -14,6 +14,7 @@ from email.mime.multipart import MIMEMultipart
 from email.header import Header
 import logging
 import random
+import pytz
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -203,9 +204,11 @@ class WeatherEmail:
             "🎯 愿你每一天都很美好",
             "✨ 小麻雀生活愉快"
         ]
-        now = datetime.now()
-        if now.day == 1:
-            advice_list.append(f"{now.month}月快乐！黄雨珏同学！")
+        # 使用北京时间判断是否为月初
+        beijing_tz = pytz.timezone('Asia/Shanghai')
+        beijing_now = datetime.now(beijing_tz)
+        if beijing_now.day == 1:
+            advice_list.append(f"{beijing_now.month}月快乐！黄雨珏同学！")
         else:
             advice_list.append(random.choice(tips))
             
@@ -305,7 +308,7 @@ class WeatherEmail:
         </head>
         <body>
             <h1>小麻雀天气助手</h1>
-            <div class="date">{datetime.now().strftime('%Y年%m月%d日 %A')}</div>
+            <div class="date">{datetime.now(pytz.timezone('Asia/Shanghai')).strftime('%Y年%m月%d日 %A')}</div>
             
             <div class="weather-card">
                 <div class="current-weather">
