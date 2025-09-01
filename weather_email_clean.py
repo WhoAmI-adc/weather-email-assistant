@@ -206,7 +206,7 @@ class WeatherEmail:
         from datetime import datetime, timedelta
         beijing_now = datetime.utcnow() + timedelta(hours=8)
         if beijing_now.day == 1:
-            advice_list.append(f"{now.month}月快乐！黄雨珏同学！")
+            advice_list.append(f"{beijing_now.month}月快乐！黄雨珏同学！")
         else:
             advice_list.append(random.choice(tips))
             
@@ -508,4 +508,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
