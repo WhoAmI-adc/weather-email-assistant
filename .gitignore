@@ -9,6 +9,9 @@ email_config.json
 # Log files
 *.log
 
+# Test files (use /tmp for testing)
+test_*.py
+
 # IDE files
 .vscode/
 .idea/
