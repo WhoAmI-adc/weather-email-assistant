@@ -242,6 +242,12 @@ class WeatherEmail:
     def format_weather_html(self, weather_data):
         # 获取当前北京时间
         beijing_now = datetime.now(timezone.utc) + timedelta(hours=8)
+        if weather_data['forecast']:
+           today_forecast = weather_data['forecast'][0]
+           temp_min = today_forecast.get('tempMin', 'N/A')
+           temp_max = today_forecast.get('tempMax', 'N/A')
+        else:
+           temp_min = temp_max = 'N/A'
         """格式化天气信息为HTML邮件内容"""
         if not weather_data:
             return "<p>获取天气信息失败</p>"
@@ -315,7 +321,12 @@ class WeatherEmail:
             
             <div class="weather-card">
                 <div class="current-weather">
-                    <div class="temperature">{current.get('temp', 'N/A')}°C</div>
+                    <div class="temperature">
+                        {current.get('temp', 'N/A')}°C
+                        <span style="font-size:0.6em;">
+                            （↑{temp_max}°C ↓{temp_min}°C）
+                        </span>
+                    </div>
                     <div style="font-size: 1.1em; margin: 10px 0;">
                         {current.get('text', '未知')}
                     </div>
@@ -513,6 +524,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
