@@ -306,7 +306,9 @@ class WeatherEmail:
         </head>
         <body>
             <h1>小麻雀天气助手</h1>
-            <div class="date">{datetime.now().strftime('%Y年%m月%d日 %A')}</div>
+            from datetime import datetime, timedelta
+            beijing_now = datetime.utcnow() + timedelta(hours=8)
+            <div class="date">{beijing_now.strftime('%Y年%m月%d日 %A')}</div>
             
             <div class="weather-card">
                 <div class="current-weather">
@@ -508,5 +510,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
