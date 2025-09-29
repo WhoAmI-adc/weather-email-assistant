@@ -15,6 +15,12 @@ from email.header import Header
 import logging
 import random
 
+from datetime import datetime, timedelta, timezone
+
+def format_weather_html(self, weather_data):
+    # 获取当前北京时间
+    beijing_now = datetime.now(timezone.utc) + timedelta(hours=8)
+
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -510,6 +516,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
