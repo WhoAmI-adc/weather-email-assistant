@@ -324,7 +324,7 @@ class WeatherEmail:
                     <div class="temperature">
                         {current.get('temp', 'N/A')}°C
                         <span style="font-size:0.6em;">
-                            （最高温{temp_max}°C 最低温{temp_min}°C）
+                            （{temp_max}°C ~ {temp_min}°C）
                         </span>
                     </div>
                     <div style="font-size: 1.1em; margin: 10px 0;">
@@ -524,6 +524,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
